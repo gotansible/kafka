@@ -7,7 +7,7 @@ kafka_sha256: 89ede9ae0f51f7163c4140d8ab43fcedf8eb3066bb8058f3d97f75e9868899ce
 
 kafka_archive_folder: kafka/{{ kafka_version }}
 kafka_archive: kafka_{{ kafka_scala_version }}-{{ kafka_version }}
-kafka_archive_url: http://download.kafka.io/releases/{{ kafka_archive }}.tar.gz
+#kafka_archive_url: http://download.kafka.io/releases/{{ kafka_archive }}.tar.gz
 
 kafka_build_dir: /tmp/kafka
 
