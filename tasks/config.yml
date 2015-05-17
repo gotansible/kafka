@@ -1,0 +1,44 @@
+---
+
+#- name: config - create config dir
+#  file:
+#    state=directory
+#    path={{ kafka_config_dir }}
+#    mode=755
+#    owner={{ kafka_user }}
+#    group={{ kafka_group }}
+
+- name: config - create log dir
+  file:
+    state=directory
+    path={{ kafka_log_dir }}
+    mode=0755
+    owner={{ kafka_user }}
+    group={{ kafka_group }}
+
+- name: config - create data dir
+  file:
+    state=directory
+    path={{ kafka_data_dir }}
+    mode=0740
+    owner={{ kafka_user }}
+    group={{ kafka_group }}
+
+- name: config - install configs
+  template:
+    src={{ item }}.j2
+    dest={{ kafka_install_dir }}/current/config/{{ item }}
+    owner={{ kafka_user }}
+    group={{ kafka_group }}
+  with_items:
+    - consumer.properties
+    - server.properties
+    - producer.properties
+    - log4j.properties
+
+- name: link config dir
+  file:
+    state=link
+    path={{ kafka_config_dir }}
+    src={{ kafka_install_dir }}/current/config/
+

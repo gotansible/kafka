@@ -1,0 +1,12 @@
+---
+
+- name: service - setup and run 
+  runit:
+    name: "{{ kafka_service_name }}"
+    enabled: true
+    state: up
+    timeout: 60
+    user: "{{ kafka_user }}"
+    command: "{{ kafka_install_dir }}/current/bin/service-control start"
+  register: kafka_service_status
+

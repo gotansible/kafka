@@ -1,0 +1,61 @@
+---
+
+# Install
+kafka_version: "0.8.2.1"
+kafka_scala_version: "2.10"
+kafka_sha256: 89ede9ae0f51f7163c4140d8ab43fcedf8eb3066bb8058f3d97f75e9868899ce
+
+kafka_archive_folder: kafka/{{ kafka_version }}
+kafka_archive: kafka_{{ kafka_scala_version }}-{{ kafka_version }}
+kafka_archive_url: http://download.kafka.io/releases/{{ kafka_archive }}.tar.gz
+
+kafka_build_dir: /tmp/kafka
+
+kafka_install_dir: /opt/{{ kafka_service_name }}
+kafka_config_dir: /etc/{{ kafka_service_name }}
+kafka_log_dir: /var/log/{{ kafka_service_name }}
+kafka_user: "{{ kafka_service_name }}"
+kafka_group: "{{ kafka_service_name }}"
+kafka_service_name: kafka
+kafka_data_dir: /var/{{ kafka_service_name }}
+#kafka_data_dir: "/vol/kafka/data"
+
+kafka_service_timeout: 1200
+
+kafka_broker_id: 1
+kafka_advertised_hostname: "{{ ansible_default_ipv4.address }}"
+kafka_zookeepers: 
+  - "localhost:2181"
+
+kafka_num_partitions: 1
+kafka_broker_host_name: nil
+kafka_port: 9092
+
+kafka_io_threads: 4
+kafka_network_threads: 2
+kafka_log_flush_interval: 5
+kafka_log_flush_time_interval: 500
+kafka_log_flush_scheduler_time_interval: 1000
+
+# retain forever
+kafka_log_retention_hours: 2147483647
+
+kafka_autocreate_topics: false
+
+# == Zookeeper
+kafka_zk_connectiontimeout: 120000
+kafka_zk_sync_fallbehind_by: 60000
+kafka_zk_session_timeout: 60000
+
+# == Set Me in Environment / Stack
+kafka_zookeeper_nodes: 
+  - localhost:2181
+
+kafka_log4j_logging_level: INFO
+kafka_jmx_port: 9010
+kafka_env_vars: 
+  KAFKA_OPTS: "-Xms512M -Xmx512M -server -Djava.net.preferIPv4Stack=true -Dlog4j.configuration=file:#{node[:kafka][:conf_link_dir]}/log4j.properties"
+
+
+#kafka_controlled_shutdown_enabled: true
+#kafka_chroot_suffix: brokers

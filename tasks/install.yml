@@ -1,0 +1,74 @@
+---
+- name: create group
+  group:
+    name={{ kafka_group }}
+    system=yes
+
+- name: create user
+  user:
+    name={{ kafka_user }}
+    group={{ kafka_group }}
+    system=yes
+    createhome=no
+
+- name: create build dir
+  file:
+    state=directory
+    path={{ kafka_build_dir }}
+
+- name: check - already downloaded
+  stat: path={{ kafka_build_dir }}/{{ kafka_archive }}.tgz
+  register: kafka_download
+
+- uri: 
+    url="http://www.apache.org/dyn/closer.cgi?path={{ kafka_archive_folder }}/{{ kafka_archive }}.tgz&as_json=1"
+    return_content=yes
+  register: mirrors
+
+- set_fact:
+    kafka_mirror: "{{ (mirrors.content|from_json).preferred }}"
+
+- name: download kafka
+  get_url:
+    url: "{{ kafka_mirror }}{{ kafka_archive_folder }}/{{ kafka_archive }}.tgz"
+    dest: "{{ kafka_build_dir }}"
+    sha256sum: "{{ kafka_sha256 }}"
+  when: not kafka_download.stat.exists
+
+- name: create install dir
+  file:
+    state=directory
+    path={{ kafka_install_dir }}/{{ kafka_archive }}
+    owner={{ kafka_user }}
+    group={{ kafka_group }}
+    mode=0755
+
+- name: unarchive
+  unarchive:
+    src={{ kafka_build_dir }}/{{ kafka_archive }}.tgz
+    dest={{ kafka_install_dir }}
+    owner={{ kafka_user }}
+    group={{ kafka_group }}
+    copy=no
+    creates={{ kafka_install_dir }}/{{ kafka_archive }}/bin
+  register: unarchived
+
+- name: install - setup scripts
+  template:
+    src={{ item }}.j2
+    dest={{ kafka_install_dir }}/{{ kafka_archive }}/bin/{{ item }}
+    mode=755
+    owner={{ kafka_user }}
+    group={{ kafka_group }}
+  with_items:
+    - kafka-run-class.sh
+    - kafka-server-start.sh
+    - service-control
+
+- name: link to current
+  file:
+    state=link
+    src={{ kafka_install_dir }}/{{ kafka_archive }}
+    path={{ kafka_install_dir }}/current
+
+
