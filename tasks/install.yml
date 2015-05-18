@@ -64,6 +64,7 @@
     - kafka-run-class.sh
     - kafka-server-start.sh
     - service-control
+  notify: restart kafka
 
 - name: link to current
   file:

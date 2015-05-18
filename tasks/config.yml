@@ -1,13 +1,5 @@
 ---
 
-#- name: config - create config dir
-#  file:
-#    state=directory
-#    path={{ kafka_config_dir }}
-#    mode=755
-#    owner={{ kafka_user }}
-#    group={{ kafka_group }}
-
 - name: config - create log dir
   file:
     state=directory
@@ -35,6 +27,7 @@
     - server.properties
     - producer.properties
     - log4j.properties
+  notify: restart kafka
 
 - name: link config dir
   file:
