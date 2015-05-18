@@ -1,0 +1,6 @@
+---
+
+- name: restart kafka
+  runit: name={{ kafka_service_name }} state=up timeout=9 action=reload
+  when: not kafka_service_status.restarted
+
