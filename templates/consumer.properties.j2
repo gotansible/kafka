@@ -3,7 +3,8 @@
 # zk connection string
 # comma separated host:port pairs, each corresponding to a zk
 # server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002"
-zk.connect={{ kafka_zookeepers|join(",") }}/kafka
+{% set sep = joiner(",") %}
+zookeeper.connect={%- for ip in kafka_zookeepers -%}{{ sep() }}{{ ip }}:2181{%- endfor -%}/kafka
 
 # timeout in ms for connecting to zookeeper
 zk.connection.timeout.ms=60000

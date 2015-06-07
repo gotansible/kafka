@@ -25,7 +25,8 @@
 #broker.list=0:localhost:9092
 
 # discover brokers from ZK
-zk.connect={{ kafka_zookeepers|join(",") }}/kafka
+{% set sep = joiner(",") %}
+zookeeper.connect={%- for ip in kafka_zookeepers -%}{{ sep() }}{{ ip }}:2181{%- endfor -%}/kafka
 
 # zookeeper session timeout; default is 6000
 zk.sessiontimeout.ms= 60000
